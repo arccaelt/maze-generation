@@ -77,8 +77,8 @@ class UnionFind {
     }
 }
 
-const ROWS = 30;
-const COLS = 30;
+const ROWS = 20;
+const COLS = 20;
 let COUNT = ROWS * COLS;
 
 const canvas = document.getElementById("canvas");
@@ -147,12 +147,12 @@ function get_maze_edges(cells) {
 }
 
 // draw maze's edges
-function draw_edges(edges) {
+function draw_edges_all_at_once(edges) {
     console.log(edges);
     // for (let edge of edges) {
     //     console.log(`Edge -> ${edge.first_point} ${edge.second_point}`);
     // }
-    ctx.clearRect(0, 0, canvas.width, canvas.height);
+
     for (let edge of edges) {
         ctx.beginPath(); // Start a new path
         ctx.strokeStyle = "white";
@@ -161,6 +161,21 @@ function draw_edges(edges) {
         ctx.stroke(); // Render the path
     }
     return edges;
+}
+
+function draw_edges_one_by_one(edges) {
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+    let idx = 0;
+    setInterval(() => {
+        console.log(`idx: ${idx}`);
+        let edge = edges[idx++];
+        ctx.beginPath(); // Start a new path
+        ctx.strokeStyle = "white";
+        ctx.moveTo(edge.first_point.x, edge.first_point.y); // Move the pen to (30, 50)
+        ctx.lineTo(edge.second_point.x, edge.second_point.y); // Draw a line to (150, 100)
+        ctx.stroke(); // Render the path
+    }, 10);
 }
 
 function remove_duplicate_edges(raw_edges) {
@@ -205,7 +220,7 @@ function mst_kruskal(edges) {
 }
 
 let edges = remove_duplicate_edges(get_maze_edges(get_initial_maze_cells()));
-draw_edges(mst_kruskal(draw_edges(edges)));
+draw_edges_one_by_one(mst_kruskal(draw_edges_all_at_once(edges)));
 
 function get_random_weight(max = 1000) {
     return Math.floor(Math.random() * max);
